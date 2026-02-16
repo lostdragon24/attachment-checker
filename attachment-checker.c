@@ -12,6 +12,13 @@
 
 #include "attachment-checker.h"
 
+#include <time.h>
+
+// Путь к конфигурационному файлу
+#define CONFIG_FILE "/etc/evolution-attachment-checker/words.conf"
+#define USER_CONFIG_FILE ".config/evolution-attachment-checker/words.conf"
+
+
 // Объявления функций (прототипы)
 static gchar* extract_text_from_camel_data_wrapper(CamelDataWrapper *dw);
 static gchar* extract_text_from_camel_part(CamelMimePart *part);
@@ -22,22 +29,48 @@ static gchar* get_message_text_simple(EMsgComposer *composer);
 gchar**
 load_forbidden_words(GSettings *settings)
 {
-    if (!settings)
-        return NULL;
-    
-    gchar **words = g_settings_get_strv(settings, KEY_FORBIDDEN_WORDS);
-    
-    // Если нет сохранённых слов, возвращаем значения по умолчанию
-    if (!words || !words[0]) {
-        static const gchar *default_words[] = {
-            "confidential", "secret", "password", 
-            "private", "internal", "draft", NULL
-        };
-        
-        g_strfreev(words);
-        words = g_strdupv((gchar **)default_words);
+    GPtrArray *words_array;
+    gchar **words = NULL;
+    FILE *file = NULL;
+    gchar config_path[512];
+
+    // Сначала пробуем системный файл
+    file = fopen(CONFIG_FILE, "r");
+
+    // Если нет системного, пробуем пользовательский
+    if (!file) {
+        snprintf(config_path, sizeof(config_path), "%s/%s",
+                 g_get_home_dir(), USER_CONFIG_FILE);
+        file = fopen(config_path, "r");
     }
-    
+
+    words_array = g_ptr_array_new_with_free_func(g_free);
+
+    if (file) {
+        char line[1024];
+        while (fgets(line, sizeof(line), file)) {
+            // Удаляем пробелы и переводы строк
+            gchar *word = g_strstrip(g_strdup(line));
+            if (strlen(word) > 0 && word[0] != '#') { // Пропускаем комментарии
+                g_ptr_array_add(words_array, word);
+            } else {
+                g_free(word);
+            }
+        }
+        fclose(file);
+    } else {
+        // Значения по умолчанию, если нет файлов
+        g_ptr_array_add(words_array, g_strdup("confidential"));
+        g_ptr_array_add(words_array, g_strdup("secret"));
+        g_ptr_array_add(words_array, g_strdup("password"));
+        g_ptr_array_add(words_array, g_strdup("private"));
+        g_ptr_array_add(words_array, g_strdup("internal"));
+        g_ptr_array_add(words_array, g_strdup("draft"));
+    }
+
+    g_ptr_array_add(words_array, NULL);
+    words = (gchar **)g_ptr_array_free(words_array, FALSE);
+
     return words;
 }
 
@@ -45,11 +78,33 @@ load_forbidden_words(GSettings *settings)
 void
 save_forbidden_words(GSettings *settings, gchar **words)
 {
-    if (!settings || !words)
-        return;
-    
-    g_settings_set_strv(settings, KEY_FORBIDDEN_WORDS, (const gchar * const *)words);
-    g_settings_sync();
+    gchar config_path[512];
+    snprintf(config_path, sizeof(config_path), "%s/%s",
+             g_get_home_dir(), USER_CONFIG_FILE);
+
+    // Создаем директорию если нужно
+    gchar *config_dir = g_path_get_dirname(config_path);
+    g_mkdir_with_parents(config_dir, 0755);
+    g_free(config_dir);
+
+    FILE *file = fopen(config_path, "w");
+
+    if (file) {
+        fprintf(file, "# Запрещённые слова для плагина Evolution Attachment Checker\n");
+        fprintf(file, "# Одно слово на строку\n");
+        fprintf(file, "# Добавлено: %s\n", ctime(&(time_t){time(NULL)}));
+
+        if (words) {
+            for (gint i = 0; words[i]; i++) {
+                if (strlen(words[i]) > 0) {
+                    fprintf(file, "%s\n", words[i]);
+                }
+            }
+        }
+        fclose(file);
+    }
+
+    (void)settings; // GSettings больше не используется
 }
 
 // Проверка текста на запрещённые слова
