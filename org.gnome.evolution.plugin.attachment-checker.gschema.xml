@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.evolution.plugin.attachment-checker" 
+          path="/org/gnome/evolution/plugin/attachment-checker/">
+    
+    <key name="forbidden-words" type="as">
+      <default>['confidential', 'secret', 'password', 'private', 'internal', 'draft']</default>
+      <summary>Запрещённые слова</summary>
+      <description>Список слов, которые не должны присутствовать в письме или именах вложений</description>
+    </key>
+    
+    <key name="check-attachments" type="b">
+      <default>true</default>
+      <summary>Проверять вложения</summary>
+      <description>Проверять имена файлов вложений на наличие запрещённых слов</description>
+    </key>
+    
+    <key name="check-message-body" type="b">
+      <default>true</default>
+      <summary>Проверять текст письма</summary>
+      <description>Проверять текст письма на наличие запрещённых слов</description>
+    </key>
+    
+    <key name="case-sensitive" type="b">
+      <default>false</default>
+      <summary>Учитывать регистр</summary>
+      <description>При включении проверка будет учитывать регистр букв</description>
+    </key>
+    
+  </schema>
+</schemalist>

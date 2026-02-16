@@ -1,0 +1,64 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: attachment-checker 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: attachment-checker.c:253
+msgid "Обнаружено запрещённое слово: '%s'\n"
+"\n"
+"Вы уверены, что хотите отправить это письмо?"
+msgstr ""
+
+#: attachment-checker.c:260
+msgid "Проверка безопасности"
+msgstr ""
+
+#: attachment-checker.c:335
+msgid "Что проверять"
+msgstr ""
+
+#: attachment-checker.c:340
+msgid "Проверять имена вложений"
+msgstr ""
+
+#: attachment-checker.c:341
+msgid "Проверять текст письма"
+msgstr ""
+
+#: attachment-checker.c:342
+msgid "Учитывать регистр"
+msgstr ""
+
+#: attachment-checker.c:374
+msgid "Запрещённые слова"
+msgstr ""
+
+#: attachment-checker.c:380
+msgid "Слова, которые не должны присутствовать в письме или именах вложений:"
+msgstr ""
+
+#: attachment-checker.c:410
+msgid "Добавить"
+msgstr ""
+
+#: attachment-checker.c:410
+msgid "Удалить"
+msgstr ""
+
+#: attachment-checker.c:424
+msgid "Слова"
+msgstr ""

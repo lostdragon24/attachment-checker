@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<e-plugin-list>
+    <e-plugin
+      type="shlib"
+      id="org.gnome.evolution.plugin.attachment-checker"
+      _name="Attachment and Message Checker"
+      location="/usr/lib64/evolution/plugins/attachment-checker.so"
+      module="attachment-checker">
+
+        <_description>Проверяет письма на наличие запрещённых слов в тексте и именах вложений перед отправкой.</_description>
+
+        <author name="Alex S. Plotnikov" email="ldragon24@gmail.com"/>
+
+        <!-- Хук для проверки перед отправкой -->
+        <hook class="org.gnome.evolution.mail.events:1.0">
+            <event
+               id="composer.presendchecks"
+               handle="org_gnome_evolution_attachment_checker"
+               target="message"
+            />
+        </hook>
+
+        <!-- Хук для добавления страницы настроек -->
+        <hook class="org.gnome.evolution.mail.config:1.0">
+            <group target="prefs" id="org.gnome.evolution.mail.composerPrefs">
+                <item 
+                   type="section" 
+                   path="00.general/20.security/" 
+                   factory="e_plugin_lib_get_configure_widget"
+                   _label="Attachment and Message Checker"
+                />
+            </group>
+        </hook>
+
+    </e-plugin>
+</e-plugin-list>
